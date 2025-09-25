@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑洞情绪吸收器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        space: {
+                            900: '#050A1A',
+                            800: '#0A1128',
+                            700: '#121B3E',
+                            600: '#1E2952'
+                        },
+                        nebula: {
+                            pink: '#FF2E93',
+                            blue: '#2E93FF',
+                            purple: '#932EFF',
+                            cyan: '#2EFFE5',
+                            gold: '#FFD700'
+                        },
+                        blackhole: {
+                            shadow: '#000000',
+                            accretion: {
+                                orange: '#E67E22',
+                                red: '#C0392B',
+                                yellow: '#F39C12'
+                            }
+                        }
+                    },
+                    fontFamily: {
+                        space: ['Orbitron', 'sans-serif'],
+                        cosmic: ['Rajdhani', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow-glow {
+                text-shadow: 0 0 8px currentColor;
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            .animate-pulse-slow {
+                animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            .animate-fade-in {
+                animation: fadeIn 0.8s ease-out forwards;
+            }
+            .animate-stars {
+                animation: starPulse 8s infinite alternate;
+            }
+            .btn-glow {
+                box-shadow: 0 0 15px currentColor;
+            }
+            .music-btn {
+                transition: all 0.3s ease;
+            }
+            .music-btn:hover {
+                transform: scale(1.15);
+                box-shadow: 0 0 15px currentColor;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes starPulse {
+            from { opacity: 0.6; }
+            to { opacity: 1; }
+        }
+    </style>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 背景星空动画 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* 黑洞容器 - 天文学真实黑洞样式 */
+        .black-hole-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        
+        /* 基于EHT观测的M87黑洞特征 */
+        .scientific-black-hole {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 黑洞事件视界阴影 */
+        .black-hole-shadow {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: #000;
+            z-index: 3;
+            box-shadow: 0 0 40px rgba(0,0,0,0.9);
+        }
+        
+        /* 科学准确的吸积盘 */
+        .accretion-disk {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 350px;
+            height: 350px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 2;
+            background: conic-gradient(
+                from 45deg, 
+                transparent 45deg, 
+                rgba(230, 126, 34, 0.2) 45deg 65deg,
+                rgba(230, 126, 34, 0.7) 65deg 115deg,
+                rgba(230, 126, 34, 0.2) 115deg 135deg,
+                transparent 135deg 225deg,
+                rgba(230, 126, 34, 0.2) 225deg 255deg,
+                rgba(230, 126, 34, 0.7) 255deg 305deg,
+                rgba(230, 126, 34, 0.2) 305deg 315deg,
+                transparent 315deg
+            );
+            animation: rotate 60s linear infinite;
+        }
+        
+        /* 吸积盘的发光效果 */
+        .accretion-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 360px;
+            height: 360px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 1;
+            background: conic-gradient(
+                from 45deg, 
+                transparent 45deg, 
+                rgba(243, 156, 18, 0.3) 45deg 135deg,
+                transparent 135deg 225deg,
+                rgba(243, 156, 18, 0.3) 225deg 315deg,
+                transparent 315deg
+            );
+            filter: blur(10px);
+        }
+        
+        /* 引力透镜效应产生的光环 */
+        .lensing-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 280px;
+            height: 280px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 4;
+            background: radial-gradient(
+                circle, 
+                rgba(0,0,0,0.98) 0%, 
+                rgba(0,0,0,0.9) 48%, 
+                rgba(243, 156, 18, 0.15) 50%, 
+                rgba(243, 156, 18, 0.05) 52%, 
+                rgba(0,0,0,0) 60%
+            );
+        }
+        
+        /* 背景星光被扭曲的效果 */
+        .lensed-stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .lensed-stars span {
+            position: absolute;
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            animation: starTwinkle 4s infinite alternate;
+        }
+        
+        .lensed-stars .star-1 { width: 2px; height: 2px; top: 25%; right: 20%; transform: scale(1.5) rotate(10deg); }
+        .lensed-stars .star-2 { width: 1.5px; height: 1.5px; bottom: 30%; left: 18%; transform: scale(1.3) rotate(-5deg); }
+        .lensed-stars .star-3 { width: 2.5px; height: 2.5px; top: 60%; right: 22%; transform: scale(1.4) rotate(15deg); }
+        .lensed-stars .star-4 { width: 1px; height: 1px; bottom: 40%; right: 28%; transform: scale(1.2) rotate(-8deg); }
+        
+        @keyframes starTwinkle {
+            from { opacity: 0.6; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* 改进的吸入动画 - 速度适中，由大变小逐渐消失 */
+        @keyframes suck {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            20% {
+                transform: translate(-50%, -50%) scale(0.9) rotate(5deg);
+                opacity: 0.9;
+            }
+            40% {
+                transform: translate(-50%, -50%) scale(0.7) rotate(10deg);
+                opacity: 0.8;
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(0.5) rotate(15deg);
+                opacity: 0.6;
+            }
+            80% {
+                transform: translate(-50%, -50%) scale(0.3) rotate(20deg);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0) rotate(30deg);
+                opacity: 0;
+            }
+        }
+        
+        .sucked {
+            animation: suck 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        /* 宇宙星空答案背景 */
+        .answer-container {
+            position: relative;
+            margin: 0 auto;
+            max-width: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 0 30px rgba(147, 46, 255, 0.25),
+                        0 15px 35px rgba(0,0,0,0.3);
+            border: 1px solid rgba(147, 46, 255, 0.3);
+        }
+        
+        .cosmic-background {
+            position: relative;
+            padding: 3rem 2rem;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0A1128 0%, #121B3E 50%, #0A1128 100%);
+        }
+        
+        /* 星云层效果 */
+        .nebula-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(147, 46, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(46, 147, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 20% 70%, rgba(46, 255, 229, 0.1) 0%, transparent 30%);
+            z-index: 0;
+            animation: nebulaShift 20s infinite alternate ease-in-out;
+        }
+        
+        @keyframes nebulaShift {
+            from { transform: scale(1) translate(0, 0); }
+            to { transform: scale(1.1) translate(10px, -10px); }
+        }
+        
+        /* 背景星星 */
+        .cosmic-stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(1px 1px at 25px 45px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 70px 120px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 180px 200px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 240px 150px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 300px 90px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 360px 220px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 400px 400px;
+            z-index: 0;
+            animation: cosmicTwinkle 6s infinite alternate;
+        }
+        
+        @keyframes cosmicTwinkle {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+        
+        /* 星座连线效果 */
+        .constellations {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.2;
+        }
+        
+        .constellations::after {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 100px;
+            width: 150px;
+            height: 100px;
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-left: 1px solid rgba(255, 255, 255, 0.5);
+            transform: rotate(30deg);
+        }
+        
+        .constellations::before {
+            content: '';
+            position: absolute;
+            top: 180px;
+            right: 120px;
+            width: 120px;
+            height: 80px;
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            transform: rotate(-15deg);
+        }
+        
+        /* 文本样式 */
+        .answer-text {
+            font-style: italic;
+            text-align: center;
+            line-height: 1.8;
+            opacity: 0;
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+            font-family: 'Rajdhani', sans-serif;
+        }
+        
+        .second-answer {
+            font-style: normal;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed rgba(255,255,255,0.15);
+            opacity: 0;
+            color: #e0e0ff;
+            text-shadow: 0 0 6px rgba(46, 147, 255, 0.3);
+            position: relative;
+            z-index: 1;
+            font-family: 'Rajdhani', sans-serif;
+        }
+        
+        .third-answer {
+            font-weight: 600;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed rgba(255,255,255,0.15);
+            opacity: 0;
+            color: #ffeb3b;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            position: relative;
+            z-index: 1;
+            font-family: 'Rajdhani', sans-serif;
+        }
+        
+        /* 初始化状态 */
+        #message-container {
+            display: none;
+        }
+        
+        .floating-object {
+            position: absolute;
+            opacity: 0.7;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        /* 抖动动画 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .animate-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        /* 音乐控制按钮 */
+        .music-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(10, 17, 40, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 1px solid rgba(46, 255, 229, 0.3);
+        }
+        
+        .music-status {
+            font-size: 14px;
+            color: rgba(46, 255, 229, 0.9);
+        }
+        
+        /* 再问一次按钮样式增强 */
+        #reset-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        #reset-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        
+        #reset-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-space-900 text-white min-h-screen font-space">
+    <!-- 星空背景 -->
+    <div class="stars"></div>
+    
+    <!-- 背景音乐控制区 -->
+    <div class="music-controls">
+        <span class="music-status" id="music-status">音乐播放中</span>
+        <button id="toggle-music" class="music-btn bg-nebula-cyan/20 hover:bg-nebula-cyan/40 text-nebula-cyan p-2 rounded-full">
+            <i class="fa fa-pause"></i>
+        </button>
+        <button id="next-music" class="music-btn bg-nebula-purple/20 hover:bg-nebula-purple/40 text-nebula-purple p-2 rounded-full">
+            <i class="fa fa-step-forward"></i>
+        </button>
+    </div>
+    
+    <!-- 音频元素容器 - 10首舒缓治愈系背景音乐 -->
+    <div id="audio-container" class="hidden">
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="none"></audio>
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" preload="none"></audio>
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" preload="none"></audio>
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" preload="none"></audio>
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" preload="none"></audio>
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" preload="none"></audio>
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" preload="none">
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" preload="none"></audio>
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" preload="none">
+        <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" preload="none">
+    </div>
+    
+    <!-- 漂浮的太空元素 -->
+    <div class="floating-object text-nebula-blue text-3xl" style="top: 15%; left: 10%; animation-delay: 0s;">
+        <i class="fa fa-moon-o"></i>
+    </div>
+    <div class="floating-object text-nebula-pink text-2xl" style="top: 25%; right: 15%; animation-delay: 1s;">
+        <i class="fa fa-star"></i>
+    </div>
+    <div class="floating-object text-nebula-cyan text-xl" style="bottom: 20%; left: 12%; animation-delay: 2s;">
+        <i class="fa fa-asterisk"></i>
+    </div>
+    <div class="floating-object text-nebula-purple text-2xl" style="bottom: 35%; right: 10%; animation-delay: 1.5s;">
+        <i class="fa fa-comet"></i>
+    </div>
+    
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <!-- 标题区域 -->
+        <header class="text-center mb-12 mt-8">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white text-shadow-glow mb-4">
+                黑洞情绪吸收器
+            </h1>
+            <p class="text-gray-300 max-w-2xl mx-auto text-[clamp(1rem,2vw,1.2rem)]">
+                把你的烦恼告诉宇宙，让黑洞带走它们，星辰将为你揭示答案
+            </p>
+        </header>
+        
+        <!-- 主要内容区域 -->
+        <main class="max-w-4xl mx-auto">
+            <!-- 输入区域 -->
+            <div class="mb-10 bg-space-800/60 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-space-600/50">
+                <label for="worry" class="block text-lg mb-3 text-nebula-blue">
+                    <i class="fa fa-comment-o mr-2"></i>写下你的烦恼
+                </label>
+                <textarea id="worry" class="w-full bg-space-700 border border-nebula-purple/30 rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-nebula-purple/50 transition-all resize-none h-32" placeholder="例如：工作压力很大，感觉喘不过气来..."></textarea>
+                
+                <div class="mt-4 flex justify-center">
+                    <button id="submit-btn" class="bg-gradient-to-r from-nebula-purple to-nebula-blue text-white font-semibold py-3 px-8 rounded-full hover:opacity-90 transform hover:scale-105 transition-all duration-300 flex items-center btn-glow">
+                        <span>发射到黑洞</span>
+                        <i class="fa fa-rocket ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 黑洞容器 -->
+            <div id="black-hole-container" class="relative h-96 my-12 flex justify-center items-center">
+                <div class="lensed-stars">
+                    <span class="star-1"></span>
+                    <span class="star-2"></span>
+                    <span class="star-3"></span>
+                    <span class="star-4"></span>
+                </div>
+                <div class="scientific-black-hole">
+                    <div class="accretion-glow"></div>
+                    <div class="accretion-disk"></div>
+                    <div class="black-hole-shadow">
+                        <div class="lensing-ring"></div>
+                    </div>
+                </div>
+                <div id="worry-text" class="absolute text-white font-medium opacity-0 pointer-events-none"></div>
+            </div>
+            
+            <!-- 结果消息 -->
+            <div id="message-container" class="text-center py-8 px-4">
+                <div class="answer-container">
+                    <!-- 宇宙星空背景层 -->
+                    <div class="cosmic-background">
+                        <div class="nebula-layer"></div>
+                        <div class="cosmic-stars"></div>
+                        <div class="constellations"></div>
+                        
+                        <!-- 答案文本 -->
+                        <p id="primary-message" class="answer-text text-[clamp(1.2rem,3vw,1.8rem)]"></p>
+                        <p id="secondary-message" class="second-answer text-[clamp(1rem,2vw,1.4rem)]"></p>
+                        <p id="third-message" class="third-answer text-[clamp(1rem,2vw,1.4rem)]"></p>
+                    </div>
+                </div>
+                
+                <!-- 再问一次按钮 -->
+                <button id="reset-btn" class="mt-10 bg-gradient-to-r from-nebula-cyan to-nebula-blue text-white font-bold py-4 px-12 rounded-full transform hover:scale-110 transition-all duration-300 flex items-center mx-auto btn-glow animate-pulse-slow text-lg">
+                    <i class="fa fa-refresh mr-2"></i>
+                    <span>再问一次</span>
+                </button>
+            </div>
+        </main>
+        
+        <!-- 页脚 -->
+        <footer class="text-center mt-16 text-gray-400 text-sm">
+            <p>当烦恼被吸入黑洞，它们将在时空曲率中消散</p>
+            <p class="mt-2">© 2025 黑洞情绪吸收器 | 所有烦恼将被安全吞噬</p>
+        </footer>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const worryInput = document.getElementById('worry');
+        const submitBtn = document.getElementById('submit-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const worryText = document.getElementById('worry-text');
+        const messageContainer = document.getElementById('message-container');
+        const primaryMessage = document.getElementById('primary-message');
+        const secondaryMessage = document.getElementById('secondary-message');
+        const thirdMessage = document.getElementById('third-message');
+        const blackHoleContainer = document.getElementById('black-hole-container');
+        const toggleMusicBtn = document.getElementById('toggle-music');
+        const nextMusicBtn = document.getElementById('next-music');
+        const musicStatus = document.getElementById('music-status');
+        
+        // 背景音乐系统
+        let audioElements = [];
+        let currentAudioIndex = -1;
+        let isPlaying = false;
+        
+        // 初始化背景音乐
+        function initBackgroundMusic() {
+            // 获取所有音频元素
+            const audioContainer = document.getElementById('audio-container');
+            audioElements = Array.from(audioContainer.getElementsByTagName('audio'));
+            
+            // 设置所有音频的音量
+            audioElements.forEach(audio => {
+                audio.volume = 0.3; // 适中的音量，不影响体验
+                
+                // 当音频结束时自动播放下一首
+                audio.addEventListener('ended', playNextMusic);
+            });
+            
+            // 尝试在用户交互后播放音乐（解决浏览器自动播放限制）
+            document.addEventListener('click', startMusicOnInteraction, { once: true });
+            
+            // 绑定音乐控制按钮事件
+            toggleMusicBtn.addEventListener('click', toggleMusic);
+            nextMusicBtn.addEventListener('click', playNextMusic);
+        }
+        
+        // 用户首次交互时开始播放音乐
+        function startMusicOnInteraction() {
+            if (currentAudioIndex === -1) {
+                playRandomMusic();
+            }
+        }
+        
+        // 播放随机音乐
+        function playRandomMusic() {
+            let newIndex;
+            
+            // 确保不会连续播放同一首
+            if (audioElements.length > 1) {
+                do {
+                    newIndex = Math.floor(Math.random() * audioElements.length);
+                } while (newIndex === currentAudioIndex);
+            } else {
+                newIndex = 0;
+            }
+            
+            // 停止当前播放的音乐
+            if (currentAudioIndex !== -1) {
+                audioElements[currentAudioIndex].pause();
+            }
+            
+            // 播放新的音乐
+            currentAudioIndex = newIndex;
+            const newAudio = audioElements[currentAudioIndex];
+            newAudio.currentTime = 0;
+            newAudio.play().then(() => {
+                isPlaying = true;
+                updateMusicUI();
+            }).catch(error => {
+                console.log("音乐播放失败:", error);
+            });
+        }
+        
+        // 播放下一首音乐
+        function playNextMusic() {
+            playRandomMusic();
+        }
+        
+        // 切换音乐播放/暂停状态
+        function toggleMusic() {
+            if (currentAudioIndex === -1) {
+                // 如果还没有播放过音乐，先播放随机一首
+                playRandomMusic();
+                return;
+            }
+            
+            const currentAudio = audioElements[currentAudioIndex];
+            if (isPlaying) {
+                currentAudio.pause();
+            } else {
+                currentAudio.play();
+            }
+            isPlaying = !isPlaying;
+            updateMusicUI();
+        }
+        
+        // 更新音乐控制UI
+        function updateMusicUI() {
+            if (isPlaying) {
+                toggleMusicBtn.innerHTML = '<i class="fa fa-pause"></i>';
+                musicStatus.textContent = '音乐播放中';
+            } else {
+                toggleMusicBtn.innerHTML = '<i class="fa fa-play"></i>';
+                musicStatus.textContent = '音乐已暂停';
+            }
+        }
+        
+        // 主要安慰语句库
+        const primaryMessages = [
+            "已被事件视界捕获，超越了我们可观测的宇宙",
+            "烦恼已越过 Schwarzschild 半径，在奇点处被彻底瓦解",
+            "已被转化为吸积盘的辐射能量，散发到星际空间",
+            "你的烦恼正沿着黑洞的吸积盘旋转，逐渐失去能量",
+            "在黑洞的引力场中，你的烦恼的时间已被无限拉伸",
+            "通过引力透镜效应，你的烦恼已被扭曲并消散",
+            "已被黑洞的潮汐力撕裂为基本粒子，回归宇宙本源"
+        ];
+        
+        // 安慰话语库
+        const secondaryMessages = [
+            "你已经做得很好了，给自己一些喘息的空间吧",
+            "这件事并不会定义你的价值，放轻松些",
+            "宇宙如此广阔，这点烦恼只是暂时的尘埃",
+            "你比自己想象中更强大，足以面对这一切",
+            "时间会像黑洞吸收光一样，慢慢抚平这些褶皱",
+            "允许自己感受，但不要让它停留太久",
+            "每一个艰难时刻，都会成为你成长的一部分",
+            "抬头看看星空，你的烦恼在宇宙尺度下微不足道",
+            "每一次释放都是一次治愈，你正在变得更轻松"
+        ];
+        
+        // 鼓励打鸡血话语库
+        const thirdMessages = [
+            "你比你想象的更强大，现在正是证明这一点的时刻！",
+            "困难只是暂时的，你的潜力是无限的！",
+            "每一次挑战都是成长的机会，你已经准备好了！",
+            "别停下脚步，你离突破只差再坚持一下！",
+            "你的努力不会白费，坚持下去就能看到曙光！",
+            "相信自己的能力，你已经克服了无数难关！",
+            "今天的汗水，将是明天的勋章！",
+            "没有什么能阻挡你，除非你自己放弃！"
+        ];
+        
+        // 显示答案的函数
+        function displayAnswers() {
+            // 确保清除所有动画类
+            primaryMessage.classList.remove('animate-fade-in');
+            secondaryMessage.classList.remove('animate-fade-in');
+            thirdMessage.classList.remove('animate-fade-in');
+            
+            // 强制重绘
+            void primaryMessage.offsetWidth;
+            
+            // 随机选择三条话语
+            const randomPrimary = primaryMessages[Math.floor(Math.random() * primaryMessages.length)];
+            const randomSecondary = secondaryMessages[Math.floor(Math.random() * secondaryMessages.length)];
+            const randomThird = thirdMessages[Math.floor(Math.random() * thirdMessages.length)];
+            
+            // 设置文本内容
+            primaryMessage.textContent = randomPrimary;
+            secondaryMessage.textContent = randomSecondary;
+            thirdMessage.textContent = randomThird;
+            
+            // 重置透明度
+            primaryMessage.style.opacity = "0";
+            secondaryMessage.style.opacity = "0";
+            thirdMessage.style.opacity = "0";
+            
+            // 依次显示答案
+            setTimeout(() => {
+                primaryMessage.classList.add('animate-fade-in');
+                primaryMessage.style.opacity = "1";
+                
+                setTimeout(() => {
+                    secondaryMessage.classList.add('animate-fade-in');
+                    secondaryMessage.style.opacity = "1";
+                    
+                    setTimeout(() => {
+                        thirdMessage.classList.add('animate-fade-in');
+                        thirdMessage.style.opacity = "1";
+                    }, 800);
+                }, 800);
+            }, 300);
+        }
+        
+        // 发射按钮点击事件
+        submitBtn.addEventListener('click', () => {
+            const worry = worryInput.value.trim();
+            
+            if (!worry) {
+                // 抖动输入框提示用户输入
+                worryInput.classList.add('border-red-500');
+                worryInput.classList.add('animate-shake');
+                setTimeout(() => {
+                    worryInput.classList.remove('border-red-500');
+                    worryInput.classList.remove('animate-shake');
+                }, 1000);
+                return;
+            }
+            
+            // 重置答案显示状态
+            messageContainer.style.display = 'none';
+            
+            // 禁用按钮，显示烦恼文本
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50');
+            
+            // 获取黑洞中心位置
+            const blackHoleRect = document.querySelector('.black-hole-shadow').getBoundingClientRect();
+            const containerRect = blackHoleContainer.getBoundingClientRect();
+            const centerX = blackHoleRect.left + blackHoleRect.width/2 - containerRect.left;
+            const centerY = blackHoleRect.top + blackHoleRect.height/2 - containerRect.top;
+            
+            // 设置烦恼文本并定位在随机位置（围绕黑洞但在外部）
+            worryText.textContent = worry.length > 20 ? worry.substring(0, 20) + '...' : worry;
+            worryText.style.fontSize = '1.2rem'; // 初始较大尺寸
+            
+            // 计算随机起始位置（在黑洞周围但不重叠）
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.max(blackHoleRect.width/2 + 30, 150); // 确保在黑洞外部
+            const startX = centerX + distance * Math.cos(angle);
+            const startY = centerY + distance * Math.sin(angle);
+            
+            worryText.style.left = `${startX}px`;
+            worryText.style.top = `${startY}px`;
+            worryText.style.transform = 'translate(-50%, -50%)'; // 使文本中心点与定位点一致
+            worryText.style.opacity = '1';
+            worryText.style.zIndex = '10';
+            
+            // 添加吸入动画
+            setTimeout(() => {
+                // 设置吸入动画的终点为黑洞中心
+                worryText.style.left = `${centerX}px`;
+                worryText.style.top = `${centerY}px`;
+                worryText.classList.add('sucked');
+                
+                // 动画结束后显示答案（动画时长3秒）
+                setTimeout(() => {
+                    worryText.textContent = '';
+                    worryText.classList.remove('sucked');
+                    worryText.style.opacity = '0';
+                    
+                    // 显示结果消息容器并展示答案
+                    messageContainer.style.display = 'block';
+                    displayAnswers();
+                    
+                    // 清空输入框
+                    worryInput.value = '';
+                }, 3000);
+            }, 500);
+        });
+        
+        // 重置按钮点击事件
+        resetBtn.addEventListener('click', () => {
+            messageContainer.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50');
+            worryInput.focus();
+        });
+        
+        // 回车键提交
+        worryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                submitBtn.click();
+            }
+        });
+        
+        // 添加更多的漂浮星星
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            const starCount = 50;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                const size = Math.random() * 3 + 1;
+                const opacity = Math.random() * 0.8 + 0.2;
+                
+                star.style.position = 'absolute';
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.backgroundColor = 'white';
+                star.style.borderRadius = '50%';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.opacity = opacity;
+                star.style.animation = `twinkle ${Math.random() * 3 + 2}s infinite ease-in-out`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('load', () => {
+            createStars();
+            initBackgroundMusic();
+        });
+    </script>
+
+</body></html>
